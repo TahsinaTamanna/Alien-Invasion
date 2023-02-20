@@ -8,7 +8,8 @@ class AlienInvasion:
         
         # Initialize the game, and create game resources."""
         pygame.init()
-        self.screen = pygame.display.set_mode((1200, 800))pygame.display.set_caption("Alien Invasion")
+        self.screen = pygame.display.set_mode((1200, 800))
+        pygame.display.set_caption("Alien Invasion")
 
     def run_game(self):
         
@@ -19,7 +20,7 @@ class AlienInvasion:
              if event.type == pygame.QUIT:
                 sys.exit()
 # Make the most recently drawn screen visible.
-pygame.display.flip()
+        pygame.display.flip()
 
 if __name__ == '__main__':
    # Make a game instance, and run the game.

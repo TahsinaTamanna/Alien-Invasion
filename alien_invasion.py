@@ -41,11 +41,11 @@ class AlienInvasion:
           
           self._check_events()
           self.ship.update()  
-          self._update_bullets()       
+          self._update_bullets()    
+          self._update_aliens()   
           self._update_screen()
 
     def _check_events(self):
-
         # Respond to keypresses and mouse events.
         # Watch for keyboard and mouse events.
         for event in pygame.event.get():
@@ -139,6 +139,10 @@ class AlienInvasion:
             alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
             self.aliens.add(alien)       
     
+    def _update_aliens(self):
+        # Update the positions of all aliens in the fleet.
+        self.aliens.update()
+
 if __name__ == '__main__':
    # Make a game instance, and run the game.
    ai = AlienInvasion()

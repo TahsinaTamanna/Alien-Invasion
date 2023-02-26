@@ -8,8 +8,7 @@ from alien import Alien
 class AlienInvasion:
     # Overall class to manage game assets and behavior
 
-    def __init__(self):
-        
+    def __init__(self):   
         # Initialize the game, and create game resources."""
         pygame.init()
         self.screen = pygame.display.set_mode((1200, 800))
@@ -96,6 +95,9 @@ class AlienInvasion:
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
                 #print(len(self.bullets))
+        # Check for any bullets that have hit aliens.
+        # If so, get rid of the bullet and the alien.
+        collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
 
     def _update_screen(self):
         # Update images on the screen, and flip to the new screen.
@@ -145,7 +147,6 @@ class AlienInvasion:
             if alien.check_edges():
                 self._change_fleet_direction()
             break
-
     
     def _change_fleet_direction(self):
         # Drop the entire fleet and change the fleet's direction.

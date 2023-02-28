@@ -86,6 +86,8 @@ class AlienInvasion:
             self.stats.reset_stats()
             self.stats.game_active = True 
             self.sb.prep_score()
+            self.sb.prep_level()
+            self.sb.prep_ships()
             # Get rid of any remaining aliens and bullets.
             self.aliens.empty()
             self.bullets.empty()
@@ -132,7 +134,7 @@ class AlienInvasion:
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
-        self._check_bullet_alien_collisions() # --??
+        self._check_bullet_alien_collisions() 
 
 
     def _check_bullet_alien_collisions(self):
@@ -143,14 +145,17 @@ class AlienInvasion:
         if collisions:
             for aliens in collisions.values():
                 self.stats.score += self.settings.alien_points * len(aliens)
-                self.sb.prep_score()
+            self.sb.prep_score()
+            self.sb.check_high_score()
         
         if not self.aliens:
             # Destroy existing bullets and create new fleet.
             self.bullets.empty()
-            self._create_fleet() 
-        
-            self.settings.increase_speed()    
+            self._create_fleet()  
+            self.settings.increase_speed()  
+            # Increase level.
+            self.stats.level += 1
+            self.sb.prep_level()  
 
     def _update_screen(self):
         # Update images on the screen, and flip to the new screen.
@@ -195,7 +200,6 @@ class AlienInvasion:
         # Create an alien and place it in the row.
             alien = Alien(self)
             alien_width, alien_height = alien.rect.size
-            alien_width = alien.rect.width
             alien.x = alien_width + 2 * alien_width * alien_number
             alien.rect.x = alien.x
             alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
@@ -206,13 +210,13 @@ class AlienInvasion:
         for alien in self.aliens.sprites():
             if alien.check_edges():
                 self._change_fleet_direction()
-            break
+                break
     
     def _change_fleet_direction(self):
         # Drop the entire fleet and change the fleet's direction.
         for alien in self.aliens.sprites():
             alien.rect.y += self.settings.fleet_drop_speed
-            self.settings.fleet_direction *= -1   
+        self.settings.fleet_direction *= -1   
     
     def _update_aliens(self):
         # Check if the fleet is at an edge, then update the positions of all aliens in the fleet.
@@ -229,7 +233,9 @@ class AlienInvasion:
     def _ship_hit(self):
         # Respond to the ship being hit by an alien.
         if self.stats.ships_left > 0:
-            self.stats.ships_left -= 1    
+            # Decrement ships_left, and update scoreboard.
+            self.stats.ships_left -= 1
+            self.sb.prep_ships()      
             # Get rid of any remaining aliens and bullets.
             self.aliens.empty()
             self.bullets.empty()
